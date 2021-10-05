@@ -1,0 +1,22 @@
+{{ if eq .Values.cluster_type "dev" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.db.name }}
+  namespace: {{ .Values.airflow.infra_namespace }}
+  labels:
+    app: {{ .Values.db.name }}
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: {{ .Values.db.name }}
+  clusterIP: None
+  # This must be None to make this a headless service.
+  # It seems that this is used by the statefulset to enforce uniqueness of the pods?
+  # https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+{{end}}
