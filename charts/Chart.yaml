@@ -5,4 +5,4 @@ home: https://stash.corp.appnexus.com/projects/DATA_SCIENCE/repos/app_dsct-airfl
 name: airflow
 sources:
 - https://stash.corp.appnexus.com/projects/DATA_SCIENCE/repos/app_dsct-airflow/browse
-version: 1.0.0
+version: 1.0.1
