@@ -1,0 +1,41 @@
+{{ if eq .Values.cluster_type "dev" }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.db.name }}
+  namespace: {{ .Values.airflow.infra_namespace }}
+  labels:
+    app: {{ .Values.db.name }}
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+spec:
+  serviceName: {{ .Values.db.name }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.db.name }} # has to match .spec.template.metadata.labels
+      component: db
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.db.name }} # has to match .spec.selector.matchLabels
+        component: db
+        release: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      restartPolicy: Always
+      containers:
+        - name: {{ .Values.db.name }}
+          image: {{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}
+          env:
+          - name: POSTGRES_USER
+            value: {{ .Values.db.db_user }}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.db.db_password }}
+          - name: POSTGRES_DB
+            value: {{ .Values.db.db_name }}
+      imagePullSecrets:
+        - name: regcred
+
+{{ end }}

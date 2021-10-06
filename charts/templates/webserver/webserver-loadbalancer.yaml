@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.airflow.webserver_name }}
+  namespace: {{ .Values.airflow.infra_namespace }}
+  labels:
+    app: {{ .Values.airflow.webserver_name }}
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+  selector:
+    app: {{ .Values.airflow.webserver_name }}
